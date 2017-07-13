@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><title>Bitbucket merge revert configuration</title></head>
+<body>
+<strong>Project configuration</strong>
+<hr/>
+Project source location:
+<br/>
+<input type="text" id="dir">
+<br/>
+Repository url:
+<br/>
+<input type="text" id="repo">
+<br/>
+<br/>
+<strong>Bitbucket configuration</strong>
+<hr/>
+Create pull request request(required curl on classpath):
+<br/>
+<input type="checkbox" id="pr">
+<br/>
+Project name:
+<br/>
+<input type="text" id="prj">
+<br/>
+Slug name:
+<br/>
+<input type="text" id="slg">
+<br/>
+Bitbucket username:
+<br/>
+<input type="text" id="usr">
+<br/>
+Bitbucket password:
+<br/>
+<input type="password" id="pwd">
+<br/>
+<br/>
+<strong><div id="status" style="color:green;"></div></strong>
+<br/>
+<button id="save">Save</button>
+<button id="restore">Restore</button>
+<script src="options.js"></script>
+</body>
+</html>
