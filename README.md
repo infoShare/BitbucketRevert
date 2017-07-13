@@ -17,15 +17,19 @@ Bitbucket Revert is a chrome extension for bitbucket pull request merge revert s
 1) Install chrome extension - [Download]
 
 2) Select options on plugin icon context menu
+
 [![N|Solid](https://github.com/infoShare/BitbucketRevert/blob/master/Screens/options.png)](https://github.com/infoShare/BitbucketRevert)
 
 3) Configure plugin and save changes
+
 [![N|Solid](https://github.com/infoShare/BitbucketRevert/blob/master/Screens/config.png)](https://github.com/infoShare/BitbucketRevert)
 
 4) Select text on merge commit
+
 [![N|Solid](https://github.com/infoShare/BitbucketRevert/blob/master/Screens/merge.jpg)](https://github.com/infoShare/BitbucketRevert)
 
 5) Click plugin icon
+
 [![N|Solid](https://github.com/infoShare/BitbucketRevert/blob/master/Screens/icon.png)](https://github.com/infoShare/BitbucketRevert)
 
 6) Download and execute bat file - revert_[BRANCH].bat
