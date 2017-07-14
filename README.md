@@ -11,6 +11,7 @@ Bitbucket Revert is a chrome extension for Bitbucket pull request merge revert s
 
 ### Requirements:
  - **Windows** - using batch script to execute actions
+ - **Git** and **curl (for pull request option)** on PATH Environment Variable 
   
 ### How it works
 
