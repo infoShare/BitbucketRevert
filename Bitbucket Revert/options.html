@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html>
-<head><title>Bitbucket merge revert configuration</title></head>
+<head><title>Bitbucket Revert Configuration</title></head>
 <body>
-<strong>Project configuration</strong>
-<hr/>
-Project source location:
-<br/>
-<input type="text" id="dir">
-<br/>
-Repository url:
-<br/>
-<input type="text" id="repo">
-<br/>
-<br/>
-<strong>Bitbucket configuration</strong>
-<hr/>
-Create pull request request(required curl on classpath):
-<br/>
-<input type="checkbox" id="pr">
-<br/>
-Project name:
-<br/>
-<input type="text" id="prj">
-<br/>
-Slug name:
-<br/>
-<input type="text" id="slg">
-<br/>
-Bitbucket username:
-<br/>
-<input type="text" id="usr">
-<br/>
-Bitbucket password:
-<br/>
-<input type="password" id="pwd">
-<br/>
-<br/>
-<strong><div id="status" style="color:green;"></div></strong>
-<br/>
-<button id="save">Save</button>
-<button id="restore">Restore</button>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:8px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;border-top-width:1px;border-bottom-width:1px;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;border-top-width:1px;border-bottom-width:1px;}
+.tg .tg-e3zv{font-weight:bold}
+.tg .tg-yw4l{vertical-align:top}
+.tg .tg-9hbo{font-weight:bold;vertical-align:top}
+</style>
+<table class="tg" style="width:100%">
+  <tr>
+    <th class="tg-e3zv" colspan="2">Repository Configuration</th>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Repository location</td>
+    <td class="tg-yw4l"><input type="text" id="dir"></td>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Repository url</td>
+    <td class="tg-yw4l"><input type="text" id="repo"></td>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Project name</td>
+    <td class="tg-yw4l"><input type="text" id="prj"></td>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Repository name</td>
+    <td class="tg-yw4l"><input type="text" id="slg"></td>
+  </tr>
+  <tr>
+    <th class="tg-e3zv" colspan="2">Bitbucket Configuration</th>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Create pull request</td>
+    <td class="tg-yw4l"><input type="checkbox" id="pr"></td>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Username</td>
+    <td class="tg-yw4l"><input type="text" id="usr"></td>
+  </tr>
+  <tr>
+    <td class="tg-yw4l">Password</td>
+    <td class="tg-yw4l"><input type="password" id="pwd"></td>
+  </tr>
+  <tr>
+    <td class="tg-e3zv" colspan="2"><div id="status" style="color:green;"></td>
+  </tr>
+  <tr>
+    <th class="tg-e3zv"><button id="save">Save</button></th>
+    <th class="tg-e3zv"><button id="restore">Restore</button></th>
+  </tr>
+</table>
 <script src="options.js"></script>
 </body>
 </html>
