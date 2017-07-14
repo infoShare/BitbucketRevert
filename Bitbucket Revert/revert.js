@@ -8,16 +8,13 @@
  * License: MIT
  *   See https://github.com/infoShare/BitbucketRevert/blob/master/LICENSE.md
  */
-
-var json_file = "req.json";
-
 var sha_length = 11;
 var MERGED = "MERGED";
 var IN_COMMIT = "in commit";
 
 var scr = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/master\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
-var curl = "curl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \"@"+json_file+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
-var json  = '{"title":"STORY","description":"STORY","state":"OPEN","open":true,"closed":false,"fromRef":{"id":"refs/heads/REV_BRANCH","repository":{"slug":"SLG","name":null,"project":{"key":"PRJ"}}},"toRef":{"id":"refs/heads/master","repository":{"slug":"SLG","name":null,"project":{"key":"PRJ"}}},"locked":false,"links":{"self":[null]}}';
+var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/REV_BRANCH""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""toRef""":{"""id""":"""refs/heads/master""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""locked""":false,"""links""":{"""self""":[null]}}';
+var curl = "curl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
 
 var saveScript = function(branch, commit){
 	chrome.storage.sync.get(["dir", "usr", "pr", "pwd", "repo", "prj", "slg"],function(storage){
@@ -42,10 +39,9 @@ var saveScript = function(branch, commit){
 }
 
 var addPullRequest = function(script, branch, revert_branch, storage){
-	script+="\r\necho "+json.replace(/STORY/g,"Revert "+branch).replace(/REV_BRANCH/g,revert_branch)
-		.replace(/PRJ/g, storage.prj).replace(/SLG/g, storage.slg)+" > "+json_file;
-	script+="\r\n"+curl.replace(/USER/g, storage.usr).replace(/PASSWORD/g, storage.pwd)
-		.replace(/REPO/g, storage.repo).replace(/PRJ/g, storage.prj).replace(/SLG/g, storage.slg);
+	script+="\r\n"+curl.replace(/STORY/g,"Revert "+branch).replace(/REV_BRANCH/g,revert_branch)
+		.replace(/USER/g, storage.usr).replace(/PASSWORD/g, storage.pwd).replace(/REPO/g, storage.repo)
+		.replace(/PRJ/g, storage.prj).replace(/SLG/g, storage.slg);
 	return script;
 }
 
