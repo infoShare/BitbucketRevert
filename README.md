@@ -36,6 +36,8 @@ Bitbucket Revert is a chrome extension for Bitbucket pull request merge revert s
 
 ##### Sample bat file:
 
+###### Pull request option:
+
 ```sh
 cd "C:\cms"
 git fetch origin
@@ -43,6 +45,16 @@ git checkout -b feature/US1234_rev origin/master
 git revert -m 1 01234567890
 git push origin feature/US1234_rev
 curl -H "Content-Type: application/json" -X POST -u admin:password -d "{"""title""":"""Revert feature/US1234""","""description""":"""Revert feature/US1234""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/feature/US1234_rev""","""repository""":{"""slug""":"""cms""","""name""":null,"""project""":{"""key""":"""CMS"""}}},"""toRef""":{"""id""":"""refs/heads/master""","""repository""":{"""slug""":"""cms""","""name""":null,"""project""":{"""key""":"""CMS"""}}},"""locked""":false,"""links""":{"""self""":[null]}}" https://git.sbr.com/rest/api/1.0/projects/CMS/repos/cms/pull-requests
+set /p END=Hit ENTER to continue...
+```
+
+###### Commit revert option
+
+```sh
+cd "C:\cms"
+git checkout master
+git revert -m 1 01234567890
+git push origin master
 set /p END=Hit ENTER to continue...
 ```
 

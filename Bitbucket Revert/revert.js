@@ -15,29 +15,40 @@ var SLASH = "/";
 var PROJECTS = "/projects/";
 var REPOS = "/repos/";
 
-var scr = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/master\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
+var branch = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/master\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
+var merge = "cd \"DIR\"\r\ngit checkout master\r\ngit revert -m 1 COMMIT\r\ngit push origin master";
 var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/REV_BRANCH""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""toRef""":{"""id""":"""refs/heads/master""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""locked""":false,"""links""":{"""self""":[null]}}';
-var curl = "curl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
+var curl = "\r\ncurl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
 
 var saveScript = function(config){
-	chrome.storage.sync.get(["dir", "usr", "pr", "pwd"],function(storage){
+	chrome.storage.sync.get(["dir", "usr", "action", "pwd"],function(storage){
 		var dir = storage.dir;
 		if(!dir){
 			alert("Please verify and save plugin configuration");
 			return;
 		}
-		var pr = storage.pr;
+		var action = storage.action;
 		var usr = storage.usr;
 		var pwd = storage.pwd;
 		
 		var revert_branch = config.branch+"_rev";
 		
-		var script = scr.replace(/DIR/g,dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha);
-		if(pr){
-			if(usr && usr.length>0 && pwd && pwd.length>0){
-				script = addPullRequest(script, config, revert_branch, storage);
-			}else{
-				alert("Bitbucket username or password is missing, pull request will not be created");
+		var script = "";
+		if(action){
+			switch(action){
+				case 1:{
+					script = branch.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha)
+					if(usr && pwd){
+						script = addPullRequest(script, config, revert_branch, storage);
+					}else{
+						alert("Bitbucket username or password is missing, pull request will not be created");
+					}
+					break;
+				}
+				case 2:{
+					script = merge.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha);
+					break;
+				}
 			}
 		}
 		script+="\r\nset /p END=Hit ENTER to continue...";
@@ -46,19 +57,17 @@ var saveScript = function(config){
 }
 
 var addPullRequest = function(script, config, revert_branch, usr, pwd){
-	var story = "Revert " + config.branch + "from commit " + config.sha;
-	script+="\r\n"+curl.replace(/STORY/g,story).replace(/REV_BRANCH/g,revert_branch)
+	var story = "Revert " + config.branch + " from commit " + config.sha;
+	script+=curl.replace(/STORY/g,story).replace(/REV_BRANCH/g,revert_branch)
 		.replace(/USER/g, usr).replace(/PASSWORD/g, pwd).replace(/REPO/g, config.repository)
 		.replace(/PRJ/g, config.project).replace(/SLG/g, config.repo);
 	return script;
 }
 
-
 var saveFile = function(content, branch){
 	var blob = new Blob([content], {type: "application/bat;charset=utf-8"});
 	saveAs(blob, "revert_"+branch+".bat");
 }
-
 
 chrome.browserAction.onClicked.addListener( 
 	function(tab) {
