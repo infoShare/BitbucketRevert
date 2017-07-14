@@ -3,14 +3,14 @@
 Bitbucket Revert is a chrome extension for Bitbucket pull request merge revert script generation.
 
 ### Features:
-  - Create new branch with reverted changes
-  - Automatically creates pull request for newly created revert branch
+  - Implemented 2 options:
+	+ Commit reverted changes
+	+ Create branch for reverted changes and bitbucket pull request
   - Flexible configuration
   - Simple usage
 
 ### Requirements:
  - **Windows** - using batch script to execute actions
- - **Git** and **curl** on PATH Environment Variable 
   
 ### How it works
 
@@ -34,9 +34,7 @@ Bitbucket Revert is a chrome extension for Bitbucket pull request merge revert s
 
 #### 6) Download and execute bat file - revert_[BRANCH].bat
 
-##### Sample bat file:
-
-###### Pull request option:
+###### Pull request option example:
 
 ```sh
 cd "C:\cms"
@@ -48,7 +46,7 @@ curl -H "Content-Type: application/json" -X POST -u admin:password -d "{"""title
 set /p END=Hit ENTER to continue...
 ```
 
-###### Commit revert option
+###### Commit revert option example:
 
 ```sh
 cd "C:\cms"
