@@ -10,14 +10,15 @@
  */
 var sha_length = 11;
 var MERGED = "MERGED";
+var TO = " to ";
 var IN_COMMIT = "in commit";
 var SLASH = "/";
 var PROJECTS = "/projects/";
 var REPOS = "/repos/";
 
-var branch = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/master\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
-var merge = "cd \"DIR\"\r\ngit checkout master\r\ngit revert -m 1 COMMIT\r\ngit push origin master";
-var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/REV_BRANCH""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""toRef""":{"""id""":"""refs/heads/master""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""locked""":false,"""links""":{"""self""":[null]}}';
+var branch = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/BRANCH_TO\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
+var merge = "cd \"DIR\"\r\ngit checkout BRANCH_TO\r\ngit revert -m 1 COMMIT\r\ngit push origin BRANCH_TO";
+var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/REV_BRANCH""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""toRef""":{"""id""":"""refs/heads/BRANCH_TO""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""locked""":false,"""links""":{"""self""":[null]}}';
 var curl = "\r\ncurl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
 
 var saveScript = function(config){
@@ -31,13 +32,14 @@ var saveScript = function(config){
 		var usr = storage.usr;
 		var pwd = storage.pwd;
 		
-		var revert_branch = config.branch+"_rev";
+		var revert_branch = config.branch_from+"_rev";
 		
 		var script = "";
 		if(action){
 			switch(action){
 				case 1:{
-					script = branch.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha)
+					script = branch.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch)
+						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
 					if(usr && pwd){
 						script = addPullRequest(script, config, revert_branch, storage);
 					}else{
@@ -46,7 +48,8 @@ var saveScript = function(config){
 					break;
 				}
 				case 2:{
-					script = merge.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha);
+					script = merge.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch)
+						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
 					break;
 				}
 			}
@@ -60,7 +63,8 @@ var addPullRequest = function(script, config, revert_branch, usr, pwd){
 	var story = "Revert " + config.branch + " from commit " + config.sha;
 	script+=curl.replace(/STORY/g,story).replace(/REV_BRANCH/g,revert_branch)
 		.replace(/USER/g, usr).replace(/PASSWORD/g, pwd).replace(/REPO/g, config.repository)
-		.replace(/PRJ/g, config.project).replace(/SLG/g, config.repo);
+		.replace(/PRJ/g, config.project).replace(/SLG/g, config.repo)
+		.replace(/BRANCH_TO/g, config.branch_to);
 	return script;
 }
 
@@ -81,9 +85,14 @@ chrome.browserAction.onClicked.addListener(
 				var selected = selection[0];
 				
 				var merge_start = selected.indexOf(MERGED);
-				var branch_start = merge_start + MERGED.length + 1;
-				var branch_end = selected.indexOf(" ", branch_start);
-				var branch_name = selected.substring(branch_start, branch_end);
+				var branch_from_start = merge_start + MERGED.length + 1;
+				var branch_from_end = selected.indexOf(" ", branch_from_start);
+				var branch_from_name = selected.substring(branch_from_start, branch_from_end);
+				
+				var branch_to_start = selected.indexOf(TO);
+				var branch_to_start = branch_to_start + TO.length;
+				var branch_to_end = selected.indexOf(" ", branch_to_start);
+				var branch_to_name = selected.substring(branch_to_start, branch_to_end);
 				
 				var in_commit_start = selected.indexOf(IN_COMMIT);
 				var commit_start = in_commit_start + IN_COMMIT.length + 1;
@@ -105,7 +114,8 @@ chrome.browserAction.onClicked.addListener(
 				var repo_name = url.substring(repo_start, repo_end);
 				
 				var config = {
-					branch: branch_name,
+					branch_from: branch_from_name,
+					branch_to: branch_to_name,
 					sha: commit_sha,
 					repository: repository,
 					project: project_name,
