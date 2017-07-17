@@ -57,6 +57,6 @@ git push origin master
 set /p END=Hit ENTER to continue...
 ```
 
-#### 7) Enjoy your newly created pull request for reverted merge!
+#### 7) Enjoy your revert or newly created pull request for reverted merge!
 
  [Download]: <https://github.com/infoShare/BitbucketRevert/raw/master/Bitbucket%20Revert.crx>
