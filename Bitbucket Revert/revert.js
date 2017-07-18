@@ -52,7 +52,7 @@ var createPullRequest = function(config, revert_branch, storage){
 	var script = branch.replace(/DIR/g, storage.dir).replace(/REV_BRANCH/g, revert_branch)
 						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
 	
-	var story = "Revert " + config.branch + " from commit " + config.sha;
+	var story = "Revert " + config.branch_from + " from commit " + config.sha;
 	script+=curl.replace(/STORY/g,story).replace(/REV_BRANCH/g,revert_branch)
 		.replace(/USER/g, storage.usr).replace(/PASSWORD/g, storage.pwd).replace(/REPO/g, config.repository)
 		.replace(/PRJ/g, config.project).replace(/SLG/g, config.repo)
