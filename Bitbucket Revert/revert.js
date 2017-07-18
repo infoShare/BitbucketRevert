@@ -22,50 +22,47 @@ var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":
 var curl = "\r\ncurl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
 
 var saveScript = function(config){
-	chrome.storage.sync.get(["dir", "usr", "action", "pwd"],function(storage){
-		var dir = storage.dir;
-		if(!dir){
+	chrome.storage.sync.get(["dir", "usr", "pwd", "action"],function(storage){
+		if(!storage.dir){
 			alert("Please verify and save plugin configuration");
 			return;
 		}
 		var action = storage.action;
-		var usr = storage.usr;
-		var pwd = storage.pwd;
-		
 		var revert_branch = config.branch_from+"_rev";
 		
 		var script = "";
 		if(action){
 			switch(action){
 				case 1:{
-					script = branch.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch)
-						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
-					if(usr && pwd){
-						script = addPullRequest(script, config, revert_branch, storage);
-					}else{
-						alert("Bitbucket username or password is missing, pull request will not be created");
-					}
+					script = createPullRequest(config, revert_branch, storage);
 					break;
 				}
 				case 2:{
-					script = merge.replace(/DIR/g, dir).replace(/REV_BRANCH/g, revert_branch)
-						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
+					script = createCommitRequest(config, revert_branch, storage);
 					break;
 				}
 			}
 		}
 		script+="\r\nset /p END=Hit ENTER to continue...";
-		saveFile(script, config.branch);
+		saveFile(script, config.branch_from);
 	});
 }
 
-var addPullRequest = function(script, config, revert_branch, usr, pwd){
+var createPullRequest = function(config, revert_branch, storage){
+	var script = branch.replace(/DIR/g, storage.dir).replace(/REV_BRANCH/g, revert_branch)
+						.replace(/COMMIT/g, config.sha).replace(/BRANCH_TO/g, config.branch_to);
+	
 	var story = "Revert " + config.branch + " from commit " + config.sha;
 	script+=curl.replace(/STORY/g,story).replace(/REV_BRANCH/g,revert_branch)
-		.replace(/USER/g, usr).replace(/PASSWORD/g, pwd).replace(/REPO/g, config.repository)
+		.replace(/USER/g, storage.usr).replace(/PASSWORD/g, storage.pwd).replace(/REPO/g, config.repository)
 		.replace(/PRJ/g, config.project).replace(/SLG/g, config.repo)
 		.replace(/BRANCH_TO/g, config.branch_to);
 	return script;
+}
+
+var createCommitRequest = function(config, revert_branch, storage){
+	return merge.replace(/DIR/g, storage.dir).replace(/REV_BRANCH/g, revert_branch).replace(/COMMIT/g, config.sha)
+		.replace(/BRANCH_TO/g, config.branch_to);
 }
 
 var saveFile = function(content, branch){
