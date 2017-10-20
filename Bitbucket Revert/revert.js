@@ -17,7 +17,7 @@ var PROJECTS = "/projects/";
 var REPOS = "/repos/";
 
 var branch = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout -b REV_BRANCH origin/BRANCH_TO\r\ngit revert -m 1 COMMIT\r\ngit push origin REV_BRANCH";
-var merge = "cd \"DIR\"\r\ngit checkout BRANCH_TO\r\ngit revert -m 1 COMMIT\r\ngit push origin BRANCH_TO";
+var merge = "cd \"DIR\"\r\ngit fetch origin\r\ngit checkout BRANCH_TO\r\ngit revert -m 1 COMMIT\r\ngit push origin BRANCH_TO";
 var json  = '{"""title""":"""STORY""","""description""":"""STORY""","""state""":"""OPEN""","""open""":true,"""closed""":false,"""fromRef""":{"""id""":"""refs/heads/REV_BRANCH""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""toRef""":{"""id""":"""refs/heads/BRANCH_TO""","""repository""":{"""slug""":"""SLG""","""name""":null,"""project""":{"""key""":"""PRJ"""}}},"""locked""":false,"""links""":{"""self""":[null]}}';
 var curl = "\r\ncurl -H \"Content-Type: application/json\" -X POST -u USER:PASSWORD -d \""+json+"\" REPO/rest/api/1.0/projects/PRJ/repos/SLG/pull-requests";
 
